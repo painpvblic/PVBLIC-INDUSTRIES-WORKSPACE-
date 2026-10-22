@@ -1,0 +1,7 @@
+{
+  "name": "pvblic-industries-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PVBLIC INDUSTRIES WORKSPACE with a secure server-side Gemini API endpoint for Vercel",
+  "engines": { "node": ">=20" }
+}

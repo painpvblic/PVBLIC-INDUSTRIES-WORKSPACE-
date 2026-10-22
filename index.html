@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#030607">
+<title>PVBLIC INDUSTRIES WORKSPACE</title>
+<style>
+:root{
+  --bg:#030607;--panel:#05090b;--line:#12334a;--line2:#1b5275;
+  --text:#c2d7ee;--muted:#7791a8;--green:#00f5a0;--cyan:#23c8ff;
+  --blue:#579cff;--yellow:#e3f76a;--red:#ff657a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+a{color:var(--cyan);text-decoration:none}
+.topbar{height:46px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 16px;gap:10px;background:#020405;position:sticky;top:0;z-index:5}
+.brand-prompt{color:var(--green);white-space:nowrap}.top-meta{color:var(--muted);font-size:12px}
+.layout{display:grid;grid-template-columns:220px minmax(0,1fr) 250px;gap:0;min-height:calc(100vh - 46px);padding:0 10px 10px}
+.sidebar,.main,.right{border:1px solid var(--line);background:linear-gradient(135deg,#04090b,#020405);min-width:0}
+.sidebar{border-radius:0 0 0 6px;padding:20px 12px;display:flex;flex-direction:column}
+.main{border-radius:0 0 6px 0;border-left:0;border-right:0;display:flex;flex-direction:column;min-height:calc(100vh - 56px)}
+.right{border-radius:0 0 6px 0;padding:18px 14px}
+.logo{display:flex;gap:10px;align-items:center;margin:0 4px 24px;color:var(--green);font-size:15px}
+.logo-mark{font-size:30px;color:#65e8c0}
+.nav{display:flex;flex-direction:column;gap:5px}
+.nav button{background:transparent;color:var(--text);border:1px solid transparent;text-align:left;padding:10px 9px;border-radius:3px;display:flex;gap:10px;align-items:center}
+.nav button.active{border-color:#154867;background:#061522;color:var(--cyan)}
+.nav button:hover{border-color:var(--line2)}
+.nav .num{color:var(--muted);min-width:28px}
+.divider{border:0;border-top:1px solid var(--line);margin:18px 0}
+.ascii{color:#3a9ed1;white-space:pre-line;font-size:13px;margin-top:auto;padding:12px 5px}
+.sidebar-foot{color:var(--muted);font-size:12px;margin:14px 5px 0}
+.tabs{height:43px;border-bottom:1px solid var(--line);display:flex;align-items:stretch;gap:5px;padding:0 8px}
+.tab{padding:9px 12px;color:var(--cyan);border:1px solid var(--line);border-top:2px solid var(--cyan);border-bottom:0;background:#06111a;border-radius:5px 5px 0 0}
+.tab .close{color:var(--muted);margin-left:16px}
+.tab-add{background:transparent;color:var(--muted);border:1px solid var(--line);padding:0 12px}
+.terminal{padding:16px 18px;flex:1;overflow:auto;max-height:calc(100vh - 170px)}
+.prompt{color:var(--green);margin-bottom:5px}
+.message{white-space:pre-wrap;overflow-wrap:anywhere;margin-bottom:16px}
+.message.user{color:#c5dcf8}
+.message.assistant{color:#a9c7ec}
+.message .role{color:var(--cyan);margin-bottom:5px}
+.message .role::before{content:"✦ ";color:var(--blue)}
+.welcome{color:var(--muted);border-left:2px solid var(--line2);padding:8px 12px;margin:12px 0 20px}
+.composer-wrap{padding:0 12px 12px}
+.composer{display:flex;gap:8px;align-items:flex-end;border:1px solid var(--line2);border-radius:5px;padding:8px;background:#03080b}
+.composer textarea{flex:1;min-width:0;resize:vertical;min-height:44px;max-height:140px;background:transparent;color:var(--text);border:0;outline:none;padding:8px}
+.send{border:0;background:transparent;color:var(--cyan);font-size:22px;padding:5px 10px}
+.small-note{color:var(--muted);font-size:11px;margin:6px 4px 0}
+.section-title{color:#a9b8c7;font-size:13px;letter-spacing:.04em;margin-bottom:14px}
+.info{display:grid;grid-template-columns:68px 10px 1fr;gap:4px 4px;margin-bottom:18px;overflow-wrap:anywhere}
+.info .label{color:#a9c7ec}.info .colon{color:var(--muted)}
+.right-section{border-top:1px solid var(--line);padding-top:15px;margin-top:18px}
+.right-section h3{font-size:13px;font-weight:400;color:var(--green);margin:0 0 10px}
+.status{display:grid;grid-template-columns:22px 65px 1fr;gap:6px;margin:9px 0;align-items:center}
+.status .icon{font-size:18px}.status .name{color:var(--cyan)}.status .state{color:var(--muted)}
+.state.ok{color:var(--green)}.state.web{color:#9ac9ff}
+.commands{display:grid;grid-template-columns:76px 1fr;gap:5px}
+.commands span:nth-child(odd){color:#d9e6f5}.commands span:nth-child(even){color:#5fbfff}
+.goal{color:#a9c7ec}
+.settings-box{padding:16px;max-width:650px}
+.settings-box label{display:block;color:var(--green);margin:14px 0 6px}
+.settings-box input{width:100%;background:#03080b;border:1px solid var(--line2);padding:10px;color:var(--text);border-radius:3px}
+.action{background:#061522;border:1px solid var(--line2);color:var(--cyan);padding:9px 12px;border-radius:3px;margin-top:12px}
+.hidden{display:none!important}
+.toast{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);background:#071820;border:1px solid var(--line2);padding:9px 14px;color:var(--text);z-index:10;max-width:90vw}
+@media(max-width:900px){
+ .layout{grid-template-columns:180px minmax(0,1fr);padding:0 6px 6px}
+ .right{display:none}
+ .sidebar{padding:14px 8px}
+ .terminal{padding:14px 12px}
+ .top-meta{display:none}
+}
+@media(max-width:560px){
+ body{font-size:13px}
+ .topbar{height:40px;padding:0 9px}
+ .layout{display:flex;flex-direction:column;min-height:calc(100vh - 40px);padding:0 5px 5px}
+ .sidebar{border-radius:0;display:block;padding:8px;border-bottom:0}
+ .logo{margin:0 4px 8px;font-size:13px}
+ .logo-mark{font-size:22px}
+ .nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+ .nav button{font-size:12px;padding:7px 5px;justify-content:center;gap:4px}
+ .nav .num{display:none}
+ .divider,.ascii,.sidebar-foot{display:none}
+ .main{border:1px solid var(--line);min-height:calc(100vh - 145px);border-radius:0 0 5px 5px}
+ .tabs{height:37px}
+ .tab{padding:7px 9px}
+ .terminal{max-height:none;min-height:45vh;padding:12px 10px}
+ .composer-wrap{padding:0 7px 8px}
+ .composer textarea{font-size:13px}
+ .message{font-size:13px}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand-prompt">› pvblic@workspace:~</div>
+  <div class="top-meta">PVBLIC INDUSTRIES WORKSPACE&nbsp; v0.1.0 &nbsp;|&nbsp; TERMINAL MODE</div>
+</header>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="logo"><span class="logo-mark">›_</span><span>PVBLIC INDUSTRIES<br><b style="color:#c2d7ee;font-weight:400">WORKSPACE</b></span></div>
+    <nav class="nav" aria-label="AI navigation">
+      <button class="active" data-view="gemini"><span class="num">[1]</span><span>✦</span> Gemini</button>
+      <button data-view="chatgpt"><span class="num">[2]</span><span>◎</span> ChatGPT ↗</button>
+      <button data-view="claude"><span class="num">[3]</span><span>✳</span> Claude ↗</button>
+    </nav>
+    <hr class="divider">
+    <nav class="nav">
+      <button id="newChat"><span class="num">[N]</span> ＋ New Chat</button>
+      <button id="historyBtn"><span class="num">[H]</span> ◷ Chat History</button>
+      <button id="settingsBtn"><span class="num">[S]</span> ⚙ Settings</button>
+    </nav>
+    <div class="ascii">//\nSatu workspace.\nTiga AI.\nTanpa batas.</div>
+    <div class="sidebar-foot">PVBLIC INDUSTRIES<br>BUILD FOR BETTER IDEAS.</div>
+  </aside>
+
+  <main class="main">
+    <div class="tabs"><div class="tab" id="tabTitle">✦ &nbsp;Gemini <span class="close">×</span></div><button class="tab-add" id="newTab" title="New chat">+</button></div>
+    <section class="terminal" id="terminal" aria-live="polite">
+      <div class="prompt">user@pvblic:~$</div>
+      <div class="welcome">[ SYSTEM READY ]<br>Selamat datang di PVBLIC INDUSTRIES WORKSPACE.<br><br>Workspace siap digunakan. Gemini akan terhubung melalui backend Vercel, atau buka ChatGPT dan Claude melalui situs resminya.<br><br><span style="color:var(--yellow)">STATUS: Backend Gemini akan tersedia setelah proyek ini di-deploy.</span></div>
+      <div class="message assistant"><div class="role">SYSTEM</div>API Gemini dipanggil melalui backend server Vercel. API key disimpan sebagai Environment Variable GEMINI_API_KEY dan tidak ditampilkan di browser.</div>
+    </section>
+    <section class="settings-box hidden" id="settings">
+      <div class="section-title">CONFIGURATION / SETTINGS</div>
+      <p style="color:var(--muted)">Backend Gemini menggunakan endpoint internal Vercel (/api/chat). API key disimpan aman di Environment Variables Vercel, bukan di halaman ini.</p>
+      <label>BACKEND STATUS</label>
+      <p id="connectionResult" style="color:var(--muted);overflow-wrap:anywhere">Tekan Test connection untuk memeriksa backend.</p>
+      <button class="action" id="testConnection">Test connection</button>
+      <hr class="divider">
+      <p style="color:var(--muted);font-size:12px">Jangan masukkan API key ke kolom chat atau HTML. Pastikan GEMINI_API_KEY sudah diatur di Vercel.</p>
+    </section>
+    <div class="composer-wrap" id="composerWrap">
+      <div class="composer">
+        <textarea id="promptInput" rows="1" placeholder="> Ketik perintah atau pertanyaan... (Enter untuk kirim)"></textarea>
+        <button class="send" id="sendBtn" aria-label="Kirim pesan">↵</button>
+      </div>
+      <div class="small-note">CTRL+ENTER / ENTER untuk mengirim · Jangan masukkan data rahasia.</div>
+    </div>
+  </main>
+
+  <aside class="right">
+    <div class="section-title">SYSTEM INFO</div>
+    <div class="info">
+      <span class="label">OS</span><span class="colon">:</span><span>Android / Browser</span>
+      <span class="label">Shell</span><span class="colon">:</span><span>web-terminal</span>
+      <span class="label">Runtime</span><span class="colon">:</span><span>JavaScript</span>
+      <span class="label">Workspace</span><span class="colon">:</span><span>PVBLIC INDUSTRIES</span>
+      <span class="label">Version</span><span class="colon">:</span><span>0.1.0</span>
+    </div>
+    <div class="right-section">
+      <h3>AI STATUS</h3>
+      <div class="status"><span class="icon">✦</span><span class="name">Gemini</span><span class="state" id="geminiStatus">Not connected</span></div>
+      <div class="status"><span class="icon">◎</span><span class="name">ChatGPT</span><span class="state web">Ready (Web)</span></div>
+      <div class="status"><span class="icon">✳</span><span class="name">Claude</span><span class="state web">Ready (Web)</span></div>
+    </div>
+    <div class="right-section">
+      <h3>QUICK COMMANDS</h3>
+      <div class="commands"><span>/new</span><span>New chat</span><span>/settings</span><span>Settings</span><span>/help</span><span>Bantuan</span><span>/clear</span><span>Clear screen</span></div>
+    </div>
+    <div class="right-section">
+      <h3>PROJECT GOAL</h3>
+      <div class="goal">Membangun workspace AI pribadi yang aman, ringan, dan bisa diakses dari mana saja.</div>
+      <hr class="divider">
+      <div style="color:var(--muted);font-size:12px">PVBLIC INDUSTRIES<br>BUILD FOR BETTER IDEAS.</div>
+    </div>
+  </aside>
+</div>
+<div id="toast" class="toast hidden" role="status"></div>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const terminal = $('terminal'), settings = $('settings'), composerWrap = $('composerWrap');
+  const input = $('promptInput'), sendBtn = $('sendBtn');
+  let currentView = 'gemini', history = [], busy = false;
+  const urls = {chatgpt:'https://chatgpt.com/', claude:'https://claude.ai/'};
+  $('geminiStatus').textContent = 'Backend status unknown';
+
+  function toast(msg) {
+    $('toast').textContent = msg; $('toast').classList.remove('hidden');
+    setTimeout(() => $('toast').classList.add('hidden'), 2800);
+  }
+  function addMessage(role, text) {
+    const wrap = document.createElement('div');
+    wrap.className = 'message ' + role;
+    const label = document.createElement('div');
+    label.className = 'role';
+    label.textContent = role === 'user' ? 'user@pvblic:~$' : (currentView === 'gemini' ? 'Gemini' : 'SYSTEM');
+    const body = document.createElement('div');
+    body.textContent = text;
+    wrap.append(label, body); terminal.appendChild(wrap);
+    terminal.scrollTop = terminal.scrollHeight;
+    return wrap;
+  }
+  function setView(view) {
+    if (view === 'chatgpt' || view === 'claude') {
+      window.open(urls[view], '_blank', 'noopener');
+      toast('Membuka ' + (view === 'chatgpt' ? 'ChatGPT' : 'Claude') + ' di tab baru.');
+      return;
+    }
+    currentView = view;
+    document.querySelectorAll('[data-view]').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+    $('tabTitle').innerHTML = '✦ &nbsp;' + (view === 'gemini' ? 'Gemini' : 'Terminal') + ' <span class="close">×</span>';
+    settings.classList.add('hidden'); terminal.classList.remove('hidden'); composerWrap.classList.remove('hidden');
+  }
+  document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+  function showSettings() {
+    terminal.classList.add('hidden'); settings.classList.remove('hidden'); composerWrap.classList.add('hidden');
+  }
+  $('settingsBtn').addEventListener('click', showSettings);
+  $('testConnection').addEventListener('click', async () => {
+    $('connectionResult').textContent = 'Menguji backend Vercel...';
+    try {
+      const res = await fetch('/api/chat', {method:'GET'});
+      const data = await res.json().catch(() => ({}));
+      $('connectionResult').textContent = data.message || ('Backend merespons HTTP ' + res.status + '.');
+      $('geminiStatus').textContent = res.ok ? 'Backend ready' : 'Check backend';
+    } catch (e) {
+      $('connectionResult').textContent = 'Backend belum tersedia. Pastikan proyek dengan folder api/chat.js sudah di-deploy.';
+      $('geminiStatus').textContent = 'Backend unavailable';
+    }
+  });
+  async function send() {
+    const text = input.value.trim();
+    if (!text || busy) return;
+    if (text === '/settings') { input.value=''; showSettings(); return; }
+    if (text === '/new' || text === '/clear') { input.value=''; terminal.innerHTML=''; addMessage('assistant','Terminal dibersihkan. Ada yang bisa saya bantu?'); return; }
+    if (text === '/help') { input.value=''; addMessage('assistant','Perintah: /new, /clear, /settings, /help. Backend Gemini dikelola melalui Vercel.'); return; }
+    input.value = ''; addMessage('user', text); history.push({role:'user',text});
+    if (currentView !== 'gemini') { addMessage('assistant','Pilih Gemini untuk mengirim pesan ke API, atau gunakan menu ChatGPT/Claude untuk membuka situs resmi.'); return; }
+    const url = '/api/chat';
+    busy = true; sendBtn.textContent = '…';
+    const waiting = addMessage('assistant','Menghubungi Gemini...');
+    try {
+      const res = await fetch(url, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({message:text, prompt:text})
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+      const answer = data.reply || data.text || data.response || data.candidates?.[0]?.content?.parts?.map(p=>p.text).join('\\n') || JSON.stringify(data);
+      waiting.lastChild.textContent = answer;
+      history.push({role:'assistant',text:answer});
+      $('geminiStatus').textContent = 'Connected (API)';
+    } catch (err) {
+      waiting.lastChild.textContent = 'Koneksi gagal: ' + err.message + '\\nPeriksa URL Worker, format endpoint, dan pengaturan CORS.';
+      $('geminiStatus').textContent = 'Connection error';
+    } finally { busy = false; sendBtn.textContent = '↵'; }
+  }
+  sendBtn.addEventListener('click', send);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+  });
+  $('newChat').addEventListener('click', () => {
+    terminal.innerHTML = ''; terminal.classList.remove('hidden'); settings.classList.add('hidden'); composerWrap.classList.remove('hidden');
+    addMessage('assistant','Sesi baru dimulai. Silakan ketik pertanyaanmu.'); input.focus();
+  });
+  $('newTab').addEventListener('click', () => $('newChat').click());
+  $('historyBtn').addEventListener('click', () => {
+    if (!history.length) { toast('Belum ada pesan di sesi ini.'); return; }
+    terminal.innerHTML = '';
+    history.forEach(m => addMessage(m.role === 'user' ? 'user' : 'assistant', m.text));
+    terminal.classList.remove('hidden'); settings.classList.add('hidden'); composerWrap.classList.remove('hidden');
+  });
+})();
+</script>
+</body>
+</html>
